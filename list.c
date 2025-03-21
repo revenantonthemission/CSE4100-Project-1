@@ -1,5 +1,7 @@
 #include "list.h"
 #include <assert.h>	
+#include <stdlib.h>
+#include <time.h>
 #define ASSERT(CONDITION) assert(CONDITION)	
 
 /* Our doubly linked lists have two header elements: the "head"
@@ -35,6 +37,7 @@
 static bool is_sorted (struct list_elem *a, struct list_elem *b,
                        list_less_func *less, void *aux);
 void list_swap(struct list_elem *a, struct list_elem *b);
+void list_shuffle(struct list *list);
                        
 /* Returns true if ELEM is a head, false otherwise. */
 static inline bool
@@ -534,5 +537,40 @@ list_min (struct list *list, list_less_func *less, void *aux)
 }
 
 void list_swap(struct list_elem *a, struct list_elem *b) {
+  /*************
+   * Functionality: Swap two list elements in parameters.
+   * Parameter: Pointer of two list elements that will be swapped.
+   * Return value: None.
+   */
+  struct list_elem *temp_prev = a->prev;
+  struct list_elem *temp_next = a->next;
+
+  a->prev = b->prev;
+  a->next = b->next;
+  b->prev = temp_prev;
+  b->next = temp_next;
+}
+
+void list_shuffle(struct list *list) {
+  /*************
+   * Functionality: Shuffle elements of LIST in the parameter
+   * Parameter: Pointer of the list that will be shuffled.
+   * Return value: None.
+   */
   
+  srand(time(NULL));
+
+  size_t size = list_size(list);
+  struct list_elem *current = list_begin(list);
+  struct list_elem *temp;
+
+  for (size_t i = 0; i < size; i++) {
+    size_t random_index = rand() % size;
+    temp = list_begin(list);
+    for (size_t j = 0; j < random_index; j++) {
+      temp = list_next(temp);
+    }
+    list_swap(current, temp);
+    current = list_next(current);
+  }
 }
