@@ -81,6 +81,29 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
+
+#define MAX_OBJECT_NAME_LENGTH 10
+// Object List
+#define LIST_FRONT "list_front" 
+#define LIST_BACK "list_back"
+#define LIST_PUSH_FRONT "list_push_front"
+#define LIST_PUSH_BACK "list_push_back"
+#define LIST_POP_FRONT "list_pop_front"
+#define LIST_POP_BACK "list_pop_back"
+#define LIST_SORT "list_sort"
+#define LIST_SHUFFLE "list_shuffle"
+#define LIST_SPLICE "list_splice"
+#define LIST_REVERSE "list_reverse"
+#define LIST_REMOVE "list_remove"
+#define LIST_UNIQUE "list_unique"
+#define LIST_MAX "list_max"
+#define LIST_MIN "list_min"
+#define LIST_EMPTY "list_empty"
+#define LIST_SIZE "list_size"
+#define LIST_INSERT "list_insert"
+#define LIST_INSERT_ORDERED "list_insert_ordered"
+#define OBJECT_LIST "list"
 
 /* List element. */
 struct list_elem 
@@ -89,11 +112,19 @@ struct list_elem
     struct list_elem *next;     /* Next list element. */
   };
 
+/* List item. */
+struct list_item
+  {
+    struct list_elem elem;
+    int data;
+  };
+
 /* List. */
 struct list 
   {
     struct list_elem head;      /* List head. */
     struct list_elem tail;      /* List tail. */
+    char name[MAX_OBJECT_NAME_LENGTH];
   };
 
 /* Converts pointer to list element LIST_ELEM into a pointer to
@@ -106,6 +137,8 @@ struct list
                      - offsetof (STRUCT, MEMBER.next)))
 
 void list_init (struct list *);
+struct list* list_create (char* name);
+void list_delete (struct list *);
 
 /* List traversal. */
 struct list_elem *list_begin (struct list *);
@@ -138,9 +171,11 @@ struct list_elem *list_back (struct list *);
 /* List properties. */
 size_t list_size (struct list *);
 bool list_empty (struct list *);
+char* list_name (struct list *);
 
 /* Miscellaneous. */
 void list_reverse (struct list *);
+struct list *query_list_by_name(char* name);
 
 /* Compares the value of two list elements A and B, given
    auxiliary data AUX.  Returns true if A is less than B, or

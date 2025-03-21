@@ -1,56 +1,150 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-#define MAX_OBJECT_NAME_LENGTH 20
-#define MAX_COMMAND_LENGTH 20
+#include "list.h"
+#include "hash.h"
+#include "bitmap.h"
+
+#define MAX_COMMAND_LENGTH 30
+#define MAX_TOKEN_LENGTH 10
+#define MAX_TOKEN_NUM 5
+
+// Command List
 #define COMMAND_CREATE "create"
 #define COMMAND_DELETE "delete"
 #define COMMAND_DUMPDATA "dumpdata"
 #define COMMAND_QUIT "quit"
-#define OBJECT_LIST "list"
-#define OBJECT_HASHTABLE "hashtable"
-#define OBJECT_BITMAP "bitmap"
 
-int main() {
-    char command[MAX_COMMAND_LENGTH] = {}, object_name[MAX_OBJECT_NAME_LENGTH] = {};
-    int bit_cnt = 0;
-
-    while (1) {
-        printf("Enter command: ");
-        scanf("%s", command);
-
-        if (strcmp(command, COMMAND_CREATE) == 0) {
-            scanf("%s", object_name);
-            if (strcmp(object_name, OBJECT_LIST) == 0) {
-                scanf("%s", object_name);
-                //dummy
-                printf("Creating list: %s\n", object_name);
-            } else if (strcmp(object_name, OBJECT_HASHTABLE) == 0) {
-                scanf("%s", object_name);
-                //dummy
-                printf("Creating hashtable: %s\n", object_name);
-            } else if (strcmp(object_name, OBJECT_BITMAP) == 0) {
-                scanf("%s %d", object_name, &bit_cnt);
-                //dummy
-                printf("Creating bitmap: %s with %d bits\n", object_name, bit_cnt);
-            } else {
-                printf("Error: Invalid create command\n");
-            }
-        } else if (strcmp(command, COMMAND_DELETE) == 0) {
-            scanf("%s", object_name);
-            //dummy
-            printf("Deleting: %s\n", object_name);
-        } else if (strcmp(command, COMMAND_DUMPDATA) == 0) {
-            scanf("%s", object_name);
-            //dummy
-            printf("Dumping data for: %s\n", object_name);
-        } else if (strcmp(command, COMMAND_QUIT) == 0) {
-            printf("Exiting program.\n");
-            break;
-        } else {
-            printf("Error: Invalid command\n");
+int main(int argc, char *argv[])
+{
+    char command[MAX_COMMAND_LENGTH]={'\0',};
+    char tokens[MAX_TOKEN_NUM][MAX_TOKEN_LENGTH]={'\0',};
+    size_t bit_cnt=0;
+    
+    while(1)
+    {
+        fgets(command, MAX_COMMAND_LENGTH-1, stdin);
+        sscanf(command, "%s %s %s %s %s", tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]);
+        for(int i=0; i<MAX_TOKEN_NUM; i++)
+        {
+            fputs(tokens[i], stdout);
+            fputs("\n", stdout);
         }
+        if(!strcmp(tokens[0], COMMAND_CREATE))
+        {
+            if(!strcmp(tokens[1], OBJECT_LIST))
+            {
+                fputs("list create\n", stdout);
+            }
+            else
+            {
+                fputs("Invalid object type.\n", stdout);
+            }
+        }
+        else if(!strcmp(tokens[0], COMMAND_DELETE))
+        {
+            if(!strcmp(tokens[1], OBJECT_LIST))
+            {
+                fputs("list delete\n", stdout);
+            }
+            else
+            {
+                fputs("Invalid object type.\n", stdout);
+            }
+        }
+        else if(!strcmp(tokens[0], COMMAND_DUMPDATA))
+        {
+            if(!strcmp(tokens[1], OBJECT_LIST))
+            {
+                fputs("list dumpdata\n", stdout);
+            }
+            else
+            {
+                fputs("Invalid object type.\n", stdout);
+            }
+        }
+        else if(!strcmp(tokens[0], COMMAND_QUIT))
+        {
+            break;
+        }
+        else if(!strcmp(tokens[0], LIST_FRONT))
+        {
+            
+        }
+        else if(!strcmp(tokens[0], LIST_BACK))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_SIZE))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_EMPTY))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_PUSH_FRONT))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_PUSH_BACK))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_POP_FRONT))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_POP_BACK))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_INSERT))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_REMOVE))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_SHUFFLE))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_SORT))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_REVERSE))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_UNIQUE))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_MAX))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_MIN))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_INSERT_ORDERED))
+        {
+
+        }
+        else if(!strcmp(tokens[0], LIST_SPLICE))
+        {
+
+        }
+        else
+        {
+            fputs("Invalid command.\n", stdout);
+        }
+        memset(command, '\0', MAX_COMMAND_LENGTH);
+        memset(tokens, '\0', MAX_TOKEN_NUM*MAX_TOKEN_LENGTH);
     }
 
     return 0;

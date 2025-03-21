@@ -72,6 +72,28 @@ list_init (struct list *list)
   list->tail.next = NULL;
 }
 
+/* Deletes the list in the parameter. */
+void list_delete (struct list *list) {
+  // free all elements in the list
+  struct list_elem *e = list_begin(list);
+  while (e != list_end(list)) {
+    struct list_elem *next = list_next(e);
+    free(e);
+    e = next;
+  }
+  // free the list
+  free(list);
+}
+
+/* Creates a new list with the name of the list in the parameter. */
+struct list* list_create (char* name)
+{
+  struct list* list = (struct list*)malloc(sizeof(struct list));
+  list_init(list);
+  strcpy(list->name, name);
+  return list;
+}
+
 /* Returns the beginning of LIST.  */
 struct list_elem *
 list_begin (struct list *list)
@@ -325,6 +347,11 @@ list_empty (struct list *list)
   return list_begin (list) == list_end (list);
 }
 
+/* Returns the name of the list in the parameter. */
+char* list_name (struct list *list) {
+  return list->name;
+}
+
 /* Swaps the `struct list_elem *'s that A and B point to. */
 static void
 swap (struct list_elem **a, struct list_elem **b) 
@@ -347,6 +374,10 @@ list_reverse (struct list *list)
       swap (&list->head.next, &list->tail.prev);
       swap (&list->head.next->prev, &list->tail.prev->next);
     }
+}
+struct list *query_list_by_name(char* name)
+{
+  
 }
 
 /* Returns true only if the list elements A through B (exclusive)
@@ -557,7 +588,6 @@ void list_shuffle(struct list *list) {
    * Parameter: Pointer of the list that will be shuffled.
    * Return value: None.
    */
-  
   srand(time(NULL));
 
   size_t size = list_size(list);

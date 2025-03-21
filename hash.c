@@ -428,3 +428,11 @@ remove_elem (struct hash *h, struct hash_elem *e)
   list_remove (&e->list_elem);
 }
 
+unsigned hash_int_2 (int i) {
+  /*
+  - Funcitonality : Implement this in your own way and describe it in the document.
+  - Parameter : Integer that will be hashed.
+  - Return value : Hash value of the integer i.
+  */
+  
+}

@@ -22,6 +22,21 @@
 #include <stdint.h>
 #include "list.h"
 
+// Object HashTable
+#define HASHTABLE_INSERT "hashtable_insert"
+#define HASHTABLE_DELETE "hashtable_delete"
+#define HASHTABLE_FIND "hashtable_find"
+#define HASHTABLE_REPLACE "hashtable_replace"
+#define HASHTABLE_APPLY "hashtable_apply"
+#define HASHTABLE_FIRST "hashtable_first"
+#define HASHTABLE_NEXT "hashtable_next"
+#define HASHTABLE_CURRENT "hashtable_current"
+#define HASHTABLE_EMPTY "hashtable_empty"
+#define HASHTABLE_SIZE "hashtable_size"
+#define HASHTABLE_CLEAR "hashtable_clear"
+#define HASHTABLE_APPLY "hashtable_apply"
+#define OBJECT_HASHTABLE "hashtable"
+
 /* Hash element. */
 struct hash_elem 
   {
