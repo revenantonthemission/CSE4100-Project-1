@@ -124,7 +124,7 @@ struct list
   {
     struct list_elem head;      /* List head. */
     struct list_elem tail;      /* List tail. */
-    char name[MAX_OBJECT_NAME_LENGTH];
+    char name[MAX_OBJECT_NAME_LENGTH]; // Object name
   };
 
 /* Converts pointer to list element LIST_ELEM into a pointer to
@@ -171,11 +171,11 @@ struct list_elem *list_back (struct list *);
 /* List properties. */
 size_t list_size (struct list *);
 bool list_empty (struct list *);
-char* list_name (struct list *);
+//char* list_name (struct list *);
 
 /* Miscellaneous. */
 void list_reverse (struct list *);
-struct list *query_list_by_name(char* name);
+//struct list *query_list_by_name(char* name);
 
 /* Compares the value of two list elements A and B, given
    auxiliary data AUX.  Returns true if A is less than B, or
@@ -183,6 +183,8 @@ struct list *query_list_by_name(char* name);
 typedef bool list_less_func (const struct list_elem *a,
                              const struct list_elem *b,
                              void *aux);
+
+bool list_less (const struct list_elem *a, const struct list_elem *b, void *aux);
 
 /* Operations on lists with ordered elements. */
 void list_sort (struct list *,

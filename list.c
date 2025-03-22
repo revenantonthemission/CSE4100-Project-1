@@ -347,11 +347,6 @@ list_empty (struct list *list)
   return list_begin (list) == list_end (list);
 }
 
-/* Returns the name of the list in the parameter. */
-char* list_name (struct list *list) {
-  return list->name;
-}
-
 /* Swaps the `struct list_elem *'s that A and B point to. */
 static void
 swap (struct list_elem **a, struct list_elem **b) 
@@ -377,7 +372,7 @@ list_reverse (struct list *list)
 }
 struct list *query_list_by_name(char* name)
 {
-  
+  //hashtable에서 name을 key로 가지는 list를 찾아서 반환
 }
 
 /* Returns true only if the list elements A through B (exclusive)
@@ -603,4 +598,16 @@ void list_shuffle(struct list *list) {
     list_swap(current, temp);
     current = list_next(current);
   }
+}
+
+bool list_less (const struct list_elem *a, const struct list_elem *b, void *aux)
+{
+  /*************
+   * Functionality: Compare two list elements in parameters.
+   * Parameter: Two list elements that will be compared.
+   * Return value: True if a is less than b, false otherwise.
+   */
+  struct list_item *a_item = list_entry(a, struct list_item, elem);
+  struct list_item *b_item = list_entry(b, struct list_item, elem);
+  return (bool) (a_item->data < b_item->data);
 }

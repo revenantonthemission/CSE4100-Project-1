@@ -17,7 +17,6 @@ static struct hash_elem *find_elem (struct hash *, struct list *,
 static void insert_elem (struct hash *, struct list *, struct hash_elem *);
 static void remove_elem (struct hash *, struct hash_elem *);
 static void rehash (struct hash *);
-unsigned hash_int_2 (int i);
 
 /* Initializes hash table H to compute hash values using HASH and
    compare hash elements using LESS, given auxiliary data AUX. */
@@ -434,5 +433,32 @@ unsigned hash_int_2 (int i) {
   - Parameter : Integer that will be hashed.
   - Return value : Hash value of the integer i.
   */
+ //double hashing
+  return i % 10;
   
+}
+
+unsigned hash_hash (struct hash_elem *e, void *aux)
+{
+  /* Computes and returns the hash value for hash element E, given
+   auxiliary data AUX. */
+  struct list *list= list_entry(&(e->list_elem), struct list, head);
+  //polynomial rolling method
+  return hash_string(list->name);
+}
+
+
+
+bool hash_less (const struct hash_elem *a, const struct hash_elem *b, void *aux)
+{
+  struct list_item *a_list = list_entry(&(a->list_elem), struct list_item, elem);
+  struct list_item *b_list = list_entry(&(b->list_elem), struct list_item, elem);
+  return a_list->data < b_list->data;
+}
+
+void hash_destroyer (struct hash_elem *e, void *aux)
+{
+  //destroyer?
+  /* Performs some operation on hash element E, given auxiliary
+   data AUX. */
 }
