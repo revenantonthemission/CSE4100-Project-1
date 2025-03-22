@@ -81,6 +81,7 @@ struct hash_iterator
 /* Basic life cycle. */
 bool hash_init (struct hash *, hash_hash_func *, hash_less_func *, void *aux);
 void hash_clear (struct hash *, hash_action_func *);
+struct hash* hash_create();
 void hash_destroy (struct hash *, hash_action_func *);
 
 /* Search, insertion, deletion. */
@@ -105,7 +106,7 @@ unsigned hash_string (const char *);
 unsigned hash_int (int);
 
 unsigned hash_int_2 (int i);
-unsigned hash_hash (struct hash_elem *e, void *aux);
+unsigned hash_hash (const struct hash_elem *e, void *aux);
 bool hash_less (const struct hash_elem *a, const struct hash_elem *b, void *aux);
 void hash_destroyer (struct hash_elem *e, void *aux);
 #endif /* hash.h */

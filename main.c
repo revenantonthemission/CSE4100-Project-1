@@ -5,8 +5,8 @@
 #include "hash.h"
 #include "bitmap.h"
 
-#define MAX_COMMAND_LENGTH 30
-#define MAX_TOKEN_LENGTH 10
+#define MAX_COMMAND_LENGTH 100
+#define MAX_TOKEN_LENGTH 20
 #define MAX_TOKEN_NUM 5
 
 // Command List
@@ -19,6 +19,9 @@ int main(int argc, char *argv[])
 {
     char command[MAX_COMMAND_LENGTH]={};
     char tokens[MAX_TOKEN_NUM][MAX_TOKEN_LENGTH]={};
+    struct list *list = NULL;
+    struct list_item *item = NULL;
+    struct hash *hashtable = NULL;
     size_t bit_cnt=0;
     
     while(1)
@@ -38,7 +41,12 @@ int main(int argc, char *argv[])
         {
             if(!strcmp(tokens[1], OBJECT_LIST))
             {
-                fputs("list create\n", stdout);
+                list = list_create(tokens[2]);
+            }
+            else if(!strcmp(tokens[1], OBJECT_HASHTABLE))
+            {
+                hashtable = hash_create();
+                hash_init(hashtable, hash_hash, hash_less, tokens[2]);
             }
             else
             {
@@ -49,7 +57,11 @@ int main(int argc, char *argv[])
         {
             if(!strcmp(tokens[1], OBJECT_LIST))
             {
-                fputs("list delete\n", stdout);
+                list_delete(list);
+            }
+            else if(!strcmp(tokens[1], OBJECT_HASHTABLE))
+            {
+                hash_destroy(hashtable, hash_destroyer);
             }
             else
             {
@@ -60,9 +72,15 @@ int main(int argc, char *argv[])
         {
             if(!strcmp(tokens[1], OBJECT_LIST))
             {
-                fputs("list dumpdata\n", stdout);
+                for(struct list_elem* ptr = list_begin(list); ptr != list_end(list); ptr = list_next(ptr))
+                {
+                    struct list_item* item = list_entry(ptr, struct list_item, elem);
+                    fprintf(stdout, "%d ", item->data);
+                    ptr = list_next(ptr);
+                }
+                fputs("\n", stdout);
             }
-            else
+            else 
             {
                 fputs("Invalid object type.\n", stdout);
             }
@@ -73,15 +91,15 @@ int main(int argc, char *argv[])
         }
         else if(!strcmp(tokens[0], LIST_FRONT))
         {
-            fputs("The front element in list\n", stdout);
+            fprintf(stdout, "%d\n", list_entry(list_front(list), struct list_item, elem)->data);
         }
         else if(!strcmp(tokens[0], LIST_BACK))
         {
-            fputs("The back element in list\n", stdout);
+            fprintf(stdout, "%d\n", list_entry(list_back(list), struct list_item, elem)->data);
         }
         else if(!strcmp(tokens[0], LIST_SIZE))
         {
-            fputs("The number of elements in list\n", stdout);
+            fprintf(stdout, "%zu\n", list_size(list));
         }
         else if(!strcmp(tokens[0], LIST_EMPTY))
         {
@@ -89,19 +107,23 @@ int main(int argc, char *argv[])
         }
         else if(!strcmp(tokens[0], LIST_PUSH_FRONT))
         {
-            fputs("1\n", stdout);
+            item = (struct list_item*)malloc(sizeof(struct list_item));
+            item->data = atoi(tokens[1]);
+            list_push_front(list, &item->elem);
         }
         else if(!strcmp(tokens[0], LIST_PUSH_BACK))
         {
-            fputs("1\n", stdout);
+            item = (struct list_item*)malloc(sizeof(struct list_item));
+            item->data = atoi(tokens[1]);
+            list_push_back(list, &item->elem);
         }
         else if(!strcmp(tokens[0], LIST_POP_FRONT))
         {
-            fputs("1\n", stdout);
+            list_pop_front(list);
         }
         else if(!strcmp(tokens[0], LIST_POP_BACK))
         {
-            fputs("1\n", stdout);
+            list_pop_back(list);
         }
         else if(!strcmp(tokens[0], LIST_INSERT))
         {
