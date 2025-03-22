@@ -23,6 +23,8 @@ int main(int argc, char *argv[])
     struct list_item *item = NULL;
     struct hash *hashtable = NULL;
     struct hash_iterator *iter = NULL;
+    struct bitmap *bitmap = NULL;
+    char bool_values[2][10] = {"false", "true"};
     size_t bit_cnt=0;
     
     while(1)
@@ -49,6 +51,11 @@ int main(int argc, char *argv[])
                 hashtable = hash_create();
                 hash_init(hashtable, hash_hash, hash_less, tokens[2]);
             }
+            else if(!strcmp(tokens[1], OBJECT_BITMAP))
+            {
+                bit_cnt = atoi(tokens[2]);
+                bitmap = bitmap_create(bit_cnt);
+            }
             else
             {
                 fputs("Invalid object type.\n", stdout);
@@ -64,6 +71,10 @@ int main(int argc, char *argv[])
             {
                 hash_destroy(hashtable, hash_destroyer);
             }
+            else if(!strcmp(tokens[1], OBJECT_BITMAP))
+            {
+                bitmap_destroy(bitmap);
+            }
             else
             {
                 fputs("Invalid object type.\n", stdout);
@@ -77,6 +88,24 @@ int main(int argc, char *argv[])
                 {
                     struct list_item* item = list_entry(ptr, struct list_item, elem);
                     fprintf(stdout, "%d ", item->data);
+                }
+                fputs("\n", stdout);
+            }
+            else if(!strcmp(tokens[1], OBJECT_HASHTABLE))
+            {
+                hash_first(iter, hashtable);
+                while(hash_next(iter))
+                {
+                    struct hash_elem* elem = hash_cur(iter);
+                    fprintf(stdout, "%d ", elem->value);
+                }
+                fputs("\n", stdout);
+            }
+            else if(!strcmp(tokens[1], OBJECT_BITMAP))
+            {
+                for(size_t i=0; i<bit_cnt; i++)
+                {
+                    fprintf(stdout, "%d ", bitmap_test(bitmap, i));
                 }
                 fputs("\n", stdout);
             }
@@ -275,67 +304,97 @@ int main(int argc, char *argv[])
         }
         else if(!strcmp(tokens[0], BITMAP_MARK))
         {
-            
+            bitmap_mark(bitmap, atoi(tokens[2]));
         }
         else if(!strcmp(tokens[0], BITMAP_TEST))
         {
-
+            bitmap_test(bitmap, atoi(tokens[2]));
         }
         else if(!strcmp(tokens[0], BITMAP_SIZE))
         {
-
+            fprintf(stdout, "%zu\n", bitmap_size(bitmap));
         }
         else if(!strcmp(tokens[0], BITMAP_SET))
         {
-            
+            bitmap_set(bitmap, atoi(tokens[2]), atoi(tokens[3]));
         }
         else if(!strcmp(tokens[0], BITMAP_SET_ALL))
         {
-
+            bitmap_set_all(bitmap, atoi(tokens[2]));
         }
         else if(!strcmp(tokens[0], BITMAP_SET_MULTIPLE))
         {
-
+            bitmap_set_multiple(bitmap, atoi(tokens[2]), atoi(tokens[3]), atoi(tokens[4]));
         }
         else if(!strcmp(tokens[0], BITMAP_SCAN))
         {
-
+            if(!strcmp(tokens[4], "true"))
+            {
+                bitmap_scan(bitmap, atoi(tokens[2]), atoi(tokens[3]), true);
+            }
+            else if(!strcmp(tokens[4], "false"))
+            {
+                bitmap_scan(bitmap, atoi(tokens[2]), atoi(tokens[3]), false);
+            }
         }
         else if(!strcmp(tokens[0], BITMAP_SCAN_AND_FLIP))
         {
-
+            if(!strcmp(tokens[4], "true"))
+            {
+                bitmap_scan_and_flip(bitmap, atoi(tokens[2]), atoi(tokens[3]), true);
+            }
+            else if(!strcmp(tokens[4], "false"))
+            {
+                bitmap_scan_and_flip(bitmap, atoi(tokens[2]), atoi(tokens[3]), false);
+            }
         }
         else if(!strcmp(tokens[0], BITMAP_RESET))
         {
-
+            bitmap_reset(bitmap, atoi(tokens[2]));
         }
         else if(!strcmp(tokens[0], BITMAP_NONE))
         {
-
+            bitmap_none(bitmap, atoi(tokens[2]), atoi(tokens[3]));
         }
         else if(!strcmp(tokens[0], BITMAP_FLIP))
         {
-
+            bitmap_flip(bitmap, atoi(tokens[2]));
         }
         else if(!strcmp(tokens[0], BITMAP_EXPAND))
         {
-
+            bitmap_expand(bitmap, atoi(tokens[2]));
         }
         else if(!strcmp(tokens[0], BITMAP_CONTAINS))
         {
-
+            if(!strcmp(tokens[4], "true"))
+            {
+                bitmap_contains(bitmap, atoi(tokens[2]), atoi(tokens[3]), true);
+            }
+            else if(!strcmp(tokens[4], "false"))
+            {
+                bitmap_contains(bitmap, atoi(tokens[2]), atoi(tokens[3]), false);
+            }
         }
         else if(!strcmp(tokens[0], BITMAP_COUNT))
         {
-
+            // bitmap_count bitmap 0 5 true
+            // token[0]: bitmap_count, token[1]: bitmap, token[2]: 0, token[3]: 5, token[4]: true
+            if(!strcmp(tokens[4], "true"))
+            {
+                bitmap_count(bitmap, atoi(tokens[2]), atoi(tokens[3]), true);
+            }
+            else if(!strcmp(tokens[4], "false"))
+            {
+                bitmap_count(bitmap, atoi(tokens[2]), atoi(tokens[3]), false);
+            }
         }
         else if(!strcmp(tokens[0], BITMAP_ANY))
         {
-
+            bitmap_any(bitmap, atoi(tokens[2]), atoi(tokens[3]));
         }
         else if(!strcmp(tokens[0], BITMAP_ALL))
         {
-
+            bitmap_all(bitmap, atoi(tokens[2]), atoi(tokens[3]));
         }
         else
         {
