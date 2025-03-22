@@ -450,7 +450,6 @@ unsigned hash_int_2 (int i) {
     i /= 10;
   }
   return hash;
-  
 }
 
 unsigned hash_hash (const struct hash_elem *e, void *aux)
@@ -474,5 +473,6 @@ void hash_destroyer (struct hash_elem *e, void *aux)
   //destroyer?
   /* Performs some operation on hash element E, given auxiliary
    data AUX. */
+  //hash_elem -> hash?
   free(e);
 }

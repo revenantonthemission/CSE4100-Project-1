@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     struct list *list = NULL;
     struct list_item *item = NULL;
     struct hash *hashtable = NULL;
+    struct hash_iterator *iter = NULL;
     size_t bit_cnt=0;
     
     while(1)
@@ -231,14 +232,17 @@ int main(int argc, char *argv[])
         }
         else if(!strcmp(tokens[0], HASHTABLE_APPLY))
         {
-            hash_apply(hashtable, hash_action);
+           //hash_apply(hashtable, hash_action);
         }
         else if(!strcmp(tokens[0], HASHTABLE_FIRST))
         {
-            struct hash_elem* e = hash_first(hashtable);
-            if(e != NULL)
+            iter = (struct hash_iterator*)malloc(sizeof(struct hash_iterator));
+            iter->hash = hashtable;
+            iter->bucket = list_begin(hashtable->buckets);
+            iter->elem = list_begin(iter->bucket);
+            if(iter->elem != NULL)
             {
-                fprintf(stdout, "%d\n", e->value);
+                fprintf(stdout, "%d\n", iter->elem->value);
             }
             else
             {
@@ -247,9 +251,7 @@ int main(int argc, char *argv[])
         }
         else if(!strcmp(tokens[0], HASHTABLE_NEXT))
         {
-            struct hash_elem* e = (struct hash_elem*)malloc(sizeof(struct hash_elem));
-            e->value = atoi(tokens[3]);
-            struct hash_elem* next = hash_next(hashtable, e);
+            struct hash_elem* next = hash_next(iter);
             if(next != NULL)
             {
                 fprintf(stdout, "%d\n", next->value);
@@ -261,7 +263,7 @@ int main(int argc, char *argv[])
         }
         else if(!strcmp(tokens[0], HASHTABLE_CURRENT))
         {
-            struct hash_elem* e = hash_cur(hashtable);
+            struct hash_elem* e = hash_cur(iter);
             if(e != NULL)
             {
                 fprintf(stdout, "%d\n", e->value);
@@ -269,6 +271,71 @@ int main(int argc, char *argv[])
             else
             {
                 fputs("Empty\n", stdout);
+            }
+        }
+        else if(!strcmp(tokens[0], BITMAP_MARK))
+        {
+            
+        }
+        else if(!strcmp(tokens[0], BITMAP_TEST))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_SIZE))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_SET))
+        {
+            
+        }
+        else if(!strcmp(tokens[0], BITMAP_SET_ALL))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_SET_MULTIPLE))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_SCAN))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_SCAN_AND_FLIP))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_RESET))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_NONE))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_FLIP))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_EXPAND))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_CONTAINS))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_COUNT))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_ANY))
+        {
+
+        }
+        else if(!strcmp(tokens[0], BITMAP_ALL))
+        {
+
         }
         else
         {
