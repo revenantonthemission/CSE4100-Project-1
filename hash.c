@@ -439,8 +439,17 @@ unsigned hash_int_2 (int i) {
   - Parameter : Integer that will be hashed.
   - Return value : Hash value of the integer i.
   */
- //double hashing
-  return i % 10;
+ // polynomial rolling hashing
+  unsigned hash = 0;
+  unsigned base = 31;
+  unsigned mod = 1e9 + 7;
+  unsigned power = 1;
+  while (i > 0) {
+    hash = (hash + (i % 10) * power) % mod;
+    power = (power * base) % mod;
+    i /= 10;
+  }
+  return hash;
   
 }
 

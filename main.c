@@ -32,11 +32,11 @@ int main(int argc, char *argv[])
         fflush(stdout);
         fgets(command, MAX_COMMAND_LENGTH-1, stdin);
         sscanf(command, "%s %s %s %s %s", tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]);
-        for(int i=0; i<MAX_TOKEN_NUM; i++)
+        /*for(int i=0; i<MAX_TOKEN_NUM; i++)
         {
             fputs(tokens[i], stdout);
             fputs("\n", stdout);
-        }
+        }*/
         if(!strcmp(tokens[0], COMMAND_CREATE))
         {
             if(!strcmp(tokens[1], OBJECT_LIST))
@@ -76,7 +76,6 @@ int main(int argc, char *argv[])
                 {
                     struct list_item* item = list_entry(ptr, struct list_item, elem);
                     fprintf(stdout, "%d ", item->data);
-                    ptr = list_next(ptr);
                 }
                 fputs("\n", stdout);
             }
@@ -107,43 +106,69 @@ int main(int argc, char *argv[])
         }
         else if(!strcmp(tokens[0], LIST_PUSH_FRONT))
         {
+            // list_push_front list0 3
+            // token[0]: list_push_front, token[1]: list0, token[2]: 3
             item = (struct list_item*)malloc(sizeof(struct list_item));
-            item->data = atoi(tokens[1]);
+            item->data = atoi(tokens[2]);
             list_push_front(list, &item->elem);
         }
         else if(!strcmp(tokens[0], LIST_PUSH_BACK))
         {
+            // list_push_back list0 4
+            // token[0]: list_push_back, token[1]: list0, token[2]: 4
             item = (struct list_item*)malloc(sizeof(struct list_item));
-            item->data = atoi(tokens[1]);
+            item->data = atoi(tokens[2]);
             list_push_back(list, &item->elem);
         }
         else if(!strcmp(tokens[0], LIST_POP_FRONT))
         {
+            // list_pop_front list0
+            // token[0]: list_pop_front, token[1]: list0
             list_pop_front(list);
         }
         else if(!strcmp(tokens[0], LIST_POP_BACK))
         {
+            // list_pop_back list0
+            // token[0]: list_pop_back, token[1]: list0
             list_pop_back(list);
         }
         else if(!strcmp(tokens[0], LIST_INSERT))
         {
-            fputs("1\n", stdout);
+            // list_insert list0 0 1
+            // token[0]: list_insert, token[1]: list0, token[2]: 0, token[3]: 1
+            struct list_elem* e = list_begin(list);
+            for(int i=0; i<atoi(tokens[2]); i++)
+            {
+                e = list_next(e);
+            }
+            item = (struct list_item*)malloc(sizeof(struct list_item));
+            item->elem.next = NULL;
+            item->elem.prev = NULL;
+            item->data = atoi(tokens[3]);
+            list_insert(e, &item->elem);    
         }
         else if(!strcmp(tokens[0], LIST_REMOVE))
         {
-            fputs("1\n", stdout);
+            // list_remove list0 0
+            // token[0]: list_remove, token[1]: list0, token[2]: 0
+            struct list_elem* e = list_begin(list);
+            for(int i=0; i<atoi(tokens[2]); i++)
+            {
+                e = list_next(e);
+            }
+            list_remove(e);
         }
         else if(!strcmp(tokens[0], LIST_SHUFFLE))
         {
-            fputs("1\n", stdout);
+            list_shuffle(list);
         }
         else if(!strcmp(tokens[0], LIST_SORT))
         {
-            fputs("1\n", stdout);
+            list_sort(list, list_less, tokens[1]);
         }
         else if(!strcmp(tokens[0], LIST_REVERSE))
         {
-            fputs("1\n", stdout);
+            list_reverse(list);
         }
         else if(!strcmp(tokens[0], LIST_UNIQUE))
         {
@@ -151,19 +176,99 @@ int main(int argc, char *argv[])
         }
         else if(!strcmp(tokens[0], LIST_MAX))
         {
-            fputs("1\n", stdout);
+            fprintf(stdout, "%d\n", list_entry(list_max(list, list_less, tokens[1]), struct list_item, elem));
         }
         else if(!strcmp(tokens[0], LIST_MIN))
         {
-            fputs("1\n", stdout);
+            fprintf(stdout, "%d\n", list_entry(list_min(list, list_less, tokens[1]), struct list_item, elem));
         }
         else if(!strcmp(tokens[0], LIST_INSERT_ORDERED))
         {
-            fputs("1\n", stdout);
+            struct list_elem* e = list_begin(list);
+            for(int i=0; i<atoi(tokens[2]); i++)
+            {
+                e = list_next(e);
+            }
+            item = (struct list_item*)malloc(sizeof(struct list_item));
+            item->data = atoi(tokens[3]);
+            list_insert_ordered(e, &item->elem, list_less, tokens[1]);    
         }
         else if(!strcmp(tokens[0], LIST_SPLICE))
         {
             fputs("1\n", stdout);
+        }
+        else if(!strcmp(tokens[0], HASHTABLE_INSERT))
+        {
+            struct hash_elem* e = (struct hash_elem*)malloc(sizeof(struct hash_elem));
+            e->value = atoi(tokens[3]);
+            hash_insert(hashtable, e);
+        }
+        else if(!strcmp(tokens[0], HASHTABLE_DELETE))
+        {
+            struct hash_elem* e = (struct hash_elem*)malloc(sizeof(struct hash_elem));
+            e->value = atoi(tokens[3]);
+            hash_delete(hashtable, e);
+        }
+        else if(!strcmp(tokens[0], HASHTABLE_FIND))
+        {
+            struct hash_elem* e = (struct hash_elem*)malloc(sizeof(struct hash_elem));
+            e->value = atoi(tokens[3]);
+            struct hash_elem* result = hash_find(hashtable, e);
+            if(result != NULL)
+            {
+                fprintf(stdout, "%d\n", result->value);
+            }
+            else
+            {
+                fputs("Not found\n", stdout);
+            }
+        }
+        else if(!strcmp(tokens[0], HASHTABLE_REPLACE))
+        {
+            struct hash_elem* e = (struct hash_elem*)malloc(sizeof(struct hash_elem));
+            e->value = atoi(tokens[3]);
+            hash_replace(hashtable, e);
+        }
+        else if(!strcmp(tokens[0], HASHTABLE_APPLY))
+        {
+            hash_apply(hashtable, hash_action);
+        }
+        else if(!strcmp(tokens[0], HASHTABLE_FIRST))
+        {
+            struct hash_elem* e = hash_first(hashtable);
+            if(e != NULL)
+            {
+                fprintf(stdout, "%d\n", e->value);
+            }
+            else
+            {
+                fputs("Empty\n", stdout);
+            }
+        }
+        else if(!strcmp(tokens[0], HASHTABLE_NEXT))
+        {
+            struct hash_elem* e = (struct hash_elem*)malloc(sizeof(struct hash_elem));
+            e->value = atoi(tokens[3]);
+            struct hash_elem* next = hash_next(hashtable, e);
+            if(next != NULL)
+            {
+                fprintf(stdout, "%d\n", next->value);
+            }
+            else
+            {
+                fputs("Empty\n", stdout);
+            }
+        }
+        else if(!strcmp(tokens[0], HASHTABLE_CURRENT))
+        {
+            struct hash_elem* e = hash_cur(hashtable);
+            if(e != NULL)
+            {
+                fprintf(stdout, "%d\n", e->value);
+            }
+            else
+            {
+                fputs("Empty\n", stdout);
         }
         else
         {
