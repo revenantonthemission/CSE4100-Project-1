@@ -1,10 +1,26 @@
-main : main.o hash.o list.o bitmap.o list.h hash.h bitmap.h
-	gcc -o main main.o hash.o list.o
-main.o : hash.h list.h bitmap.h main.c
-	gcc -o main.o -c main.c
-bitmap.o : bitmap.h bitmap.c
-	gcc -o bitmap.o -c bitmap.c
-hash.o : hash.h list.h hash.c
-	gcc -o hash.o list.o -c hash.c
-list.o : list.h list.c
-	gcc -o list.o -c list.c
+CC = gcc
+CFLAGS = -Wall -g
+
+# Object files
+OBJS = main.o hash.o list.o bitmap.o
+
+# Target
+main: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
+
+# Dependencies
+main.o: main.c list.h hash.h bitmap.h
+	$(CC) $(CFLAGS) -c main.c
+
+hash.o: hash.c hash.h list.h
+	$(CC) $(CFLAGS) -c hash.c
+
+list.o: list.c list.h
+	$(CC) $(CFLAGS) -c list.c
+
+bitmap.o: bitmap.c bitmap.h
+	$(CC) $(CFLAGS) -c bitmap.c
+
+# Clean
+clean:
+	rm -f $(OBJS) main

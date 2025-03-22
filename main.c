@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
             {
                 fprintf(stdout, "%d\n", next->value);
             }
-            else
+            else 
             {
                 fputs("Empty\n", stdout);
             }
@@ -301,7 +301,7 @@ int main(int argc, char *argv[])
             {
                 fputs("Empty\n", stdout);
             }
-        }
+        } 
         else if(!strcmp(tokens[0], BITMAP_MARK))
         {
             bitmap_mark(bitmap, atoi(tokens[2]));
