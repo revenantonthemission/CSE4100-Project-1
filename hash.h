@@ -23,19 +23,19 @@
 #include "list.h"
 
 // Object HashTable
-#define HASHTABLE_INSERT "hashtable_insert"
-#define HASHTABLE_DELETE "hashtable_delete"
-#define HASHTABLE_FIND "hashtable_find"
-#define HASHTABLE_REPLACE "hashtable_replace"
-#define HASHTABLE_APPLY "hashtable_apply"
-#define HASHTABLE_FIRST "hashtable_first"
-#define HASHTABLE_NEXT "hashtable_next"
-#define HASHTABLE_CURRENT "hashtable_current"
-#define HASHTABLE_EMPTY "hashtable_empty"
-#define HASHTABLE_SIZE "hashtable_size"
-#define HASHTABLE_CLEAR "hashtable_clear"
-#define HASHTABLE_APPLY "hashtable_apply"
+#define HASHTABLE_INSERT "hash_insert"
+#define HASHTABLE_DELETE "hash_delete"
+#define HASHTABLE_FIND "hash_find"
+#define HASHTABLE_REPLACE "hash_replace"
+#define HASHTABLE_APPLY "hash_apply"
+#define HASHTABLE_EMPTY "hash_empty"
+#define HASHTABLE_SIZE "hash_size"
+#define HASHTABLE_CLEAR "hash_clear"
+#define HASHTABLE_APPLY "hash_apply"
 #define OBJECT_HASHTABLE "hashtable"
+
+#define list_elem_to_hash_elem(LIST_ELEM)                       \
+        list_entry(LIST_ELEM, struct hash_elem, list_elem)
 
 /* Hash element. */
 struct hash_elem 
@@ -81,7 +81,6 @@ struct hash_iterator
 /* Basic life cycle. */
 bool hash_init (struct hash *, hash_hash_func *, hash_less_func *, void *aux);
 void hash_clear (struct hash *, hash_action_func *);
-struct hash* hash_create();
 void hash_destroy (struct hash *, hash_action_func *);
 
 /* Search, insertion, deletion. */
@@ -109,4 +108,6 @@ unsigned hash_int_2 (int i);
 unsigned hash_hash (const struct hash_elem *e, void *aux);
 bool hash_less (const struct hash_elem *a, const struct hash_elem *b, void *aux);
 void hash_destroyer (struct hash_elem *e, void *aux);
+void hash_square(struct hash_elem *e, void *aux);
+void hash_triple(struct hash_elem *e, void *aux);
 #endif /* hash.h */

@@ -94,6 +94,7 @@
 #define LIST_SORT "list_sort"
 #define LIST_SHUFFLE "list_shuffle"
 #define LIST_SPLICE "list_splice"
+#define LIST_SWAP "list_swap"
 #define LIST_REVERSE "list_reverse"
 #define LIST_REMOVE "list_remove"
 #define LIST_UNIQUE "list_unique"
@@ -116,7 +117,9 @@ struct list_elem
 struct list_item
   {
     struct list_elem elem;
-    int data;
+    char name[MAX_OBJECT_NAME_LENGTH]; // Object name
+    size_t type; // Object type
+    void *data;
   };
 
 /* List. */
@@ -124,7 +127,6 @@ struct list
   {
     struct list_elem head;      /* List head. */
     struct list_elem tail;      /* List tail. */
-    char name[MAX_OBJECT_NAME_LENGTH]; // Object name
   };
 
 /* Converts pointer to list element LIST_ELEM into a pointer to
@@ -137,7 +139,7 @@ struct list
                      - offsetof (STRUCT, MEMBER.next)))
 
 void list_init (struct list *);
-struct list* list_create (char* name);
+void list_item_init(struct list_item *, void *, const char*, size_t);
 void list_delete (struct list *);
 
 /* List traversal. */
@@ -175,7 +177,7 @@ bool list_empty (struct list *);
 
 /* Miscellaneous. */
 void list_reverse (struct list *);
-//struct list *query_list_by_name(char* name);
+void list_swap(struct list_elem *, struct list_elem *);
 void list_shuffle(struct list *);
 
 /* Compares the value of two list elements A and B, given

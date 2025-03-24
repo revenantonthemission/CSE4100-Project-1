@@ -8,9 +8,6 @@ See hash.h for basic information. */
 
 #define ASSERT(CONDITION) assert(CONDITION)	
 
-#define list_elem_to_hash_elem(LIST_ELEM)                       \
-        list_entry(LIST_ELEM, struct hash_elem, list_elem)
-
 static struct list *find_bucket (struct hash *, struct hash_elem *);
 static struct hash_elem *find_elem (struct hash *, struct list *,
                                     struct hash_elem *);
@@ -18,11 +15,6 @@ static void insert_elem (struct hash *, struct list *, struct hash_elem *);
 static void remove_elem (struct hash *, struct hash_elem *);
 static void rehash (struct hash *);
 
-struct hash* hash_create()
-{
-    struct hash* hash = (struct hash*)malloc(sizeof(struct hash));
-    return hash;
-}
 
 /* Initializes hash table H to compute hash values using HASH and
    compare hash elements using LESS, given auxiliary data AUX. */
@@ -452,20 +444,15 @@ unsigned hash_int_2 (int i) {
   return hash;
 }
 
-unsigned hash_hash (const struct hash_elem *e, void *aux)
+unsigned hash_hash(const struct hash_elem *e, void *aux)
 {
-  /* Computes and returns the hash value for hash element E, given
-   auxiliary data AUX. */
-  struct list *list= list_entry(&(e->list_elem), struct list, head);
-  //polynomial rolling method
-  return hash_string(list->name);
+  return hash_int(e->value);
 }
 
-bool hash_less (const struct hash_elem *a, const struct hash_elem *b, void *aux)
+
+bool hash_less(const struct hash_elem *a, const struct hash_elem *b, void *aux)
 {
-  struct list_item *a_list = list_entry(&(a->list_elem), struct list_item, elem);
-  struct list_item *b_list = list_entry(&(b->list_elem), struct list_item, elem);
-  return a_list->data < b_list->data;
+  return a->value < b->value;
 }
 
 void hash_destroyer (struct hash_elem *e, void *aux)
@@ -475,4 +462,14 @@ void hash_destroyer (struct hash_elem *e, void *aux)
    data AUX. */
   //hash_elem -> hash?
   free(e);
+}
+
+void hash_square(struct hash_elem *e, void *aux)
+{
+  e->value = e->value * e->value;
+}
+
+void hash_triple(struct hash_elem *e, void *aux)
+{
+  e->value = e->value * e->value * e->value;
 }

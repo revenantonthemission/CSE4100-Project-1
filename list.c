@@ -72,6 +72,16 @@ list_init (struct list *list)
   list->tail.next = NULL;
 }
 
+/* Initializes LIST_ITEM as an list element with DATA and NAME. */
+void list_item_init(struct list_item *item, void *data, const char* name, size_t type)
+{
+  item->data = data;
+  strcpy(item->name, name);
+  item->type = type;
+  item->elem.next = NULL;
+  item->elem.prev = NULL;
+}
+
 /* Deletes the list in the parameter. */
 void list_delete (struct list *list) {
   // free all elements in the list
@@ -83,15 +93,6 @@ void list_delete (struct list *list) {
   }
   // free the list
   free(list);
-}
-
-/* Creates a new list with the name of the list in the parameter. */
-struct list* list_create (char* name)
-{
-  struct list* list = (struct list*)malloc(sizeof(struct list));
-  list_init(list);
-  strcpy(list->name, name);
-  return list;
 }
 
 /* Returns the beginning of LIST.  */
@@ -370,10 +371,6 @@ list_reverse (struct list *list)
       swap (&list->head.next->prev, &list->tail.prev->next);
     }
 }
-struct list *query_list_by_name(char* name)
-{
-  //hashtable에서 name을 key로 가지는 list를 찾아서 반환
-}
 
 /* Returns true only if the list elements A through B (exclusive)
    are in order according to LESS given auxiliary data AUX. */
@@ -563,43 +560,72 @@ list_min (struct list *list, list_less_func *less, void *aux)
 }
 
 void list_swap(struct list_elem *a, struct list_elem *b) {
-  /*************
-   * Functionality: Swap two list elements in parameters.
-   * Parameter: Pointer of two list elements that will be swapped.
-   * Return value: None.
-   */
-  struct list_elem *temp_prev = a->prev;
-  struct list_elem *temp_next = a->next;
-
-  a->prev = b->prev;
-  a->next = b->next;
-  b->prev = temp_prev;
-  b->next = temp_next;
+  // 인접한 경우 특별 처리
+  if (a->next == b) { // a 다음에 b가 있는 경우
+    // a와 b 사이의 연결 해제 및 재연결
+    struct list_elem *a_prev = a->prev;
+    struct list_elem *b_next = b->next;
+    
+    // 외부 연결 갱신
+    a_prev->next = b;
+    b_next->prev = a;
+    
+    // a와 b 내부 연결 갱신
+    b->prev = a_prev;
+    b->next = a;
+    a->prev = b;
+    a->next = b_next;
+    return;
+  } else if (b->next == a) { // b 다음에 a가 있는 경우
+    // 재귀적으로 호출하여 동일한 로직 활용
+    list_swap(b, a);
+    return;
+  }
+  
+  // 비인접 노드일 경우
+  struct list_elem *a_prev = a->prev;
+  struct list_elem *a_next = a->next;
+  struct list_elem *b_prev = b->prev;
+  struct list_elem *b_next = b->next;
+  
+  // 외부 노드들의 연결 갱신
+  a_prev->next = b;
+  a_next->prev = b;
+  b_prev->next = a;
+  b_next->prev = a;
+  
+  // a와 b의 포인터 교환
+  a->prev = b_prev;
+  a->next = b_next;
+  b->prev = a_prev;
+  b->next = a_next;
 }
 
 void list_shuffle(struct list *list) {
-  /*************
-   * Functionality: Shuffle elements of LIST in the parameter
-   * Parameter: Pointer of the list that will be shuffled.
-   * Return value: None.
-   */
-  srand(time(NULL));
-
+  if (list_empty(list) || list_size(list) == 1)
+    return;
+    
   size_t size = list_size(list);
-  struct list_elem *current = list_begin(list);
-  struct list_elem *temp;
-
-  for (size_t i = 0; i < size; i++) {
-    size_t random_index = rand() % size;
-    temp = list_begin(list);
-    for (size_t j = 0; j < random_index; j++) {
-      temp = list_next(temp);
-    }
-    list_swap(current, temp);
-    current = list_next(current);
+  
+  // Fisher-Yates 셔플 구현 (리스트 직접 조작)
+  for (size_t i = size - 1; i > 0; i--) {
+    // i번째 요소 찾기
+    struct list_elem *e_i = list_begin(list);
+    for (size_t k = 0; k < i; k++)
+      e_i = list_next(e_i);
+      
+    // 0~i 사이의 랜덤 인덱스 j 선택
+    size_t j = rand() % (i + 1);
+    
+    // j번째 요소 찾기
+    struct list_elem *e_j = list_begin(list);
+    for (size_t k = 0; k < j; k++)
+      e_j = list_next(e_j);
+      
+    // 두 요소 교환 (이미 구현된 list_swap 사용)
+    list_swap(e_i, e_j);
   }
 }
-
 bool list_less (const struct list_elem *a, const struct list_elem *b, void *aux)
 {
   /*************
@@ -609,5 +635,5 @@ bool list_less (const struct list_elem *a, const struct list_elem *b, void *aux)
    */
   struct list_item *a_item = list_entry(a, struct list_item, elem);
   struct list_item *b_item = list_entry(b, struct list_item, elem);
-  return (bool) (a_item->data < b_item->data);
+  return *(int*)a_item->data < *(int*)b_item->data;
 }

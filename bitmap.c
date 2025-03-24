@@ -327,7 +327,19 @@ bitmap_dump (const struct bitmap *b)
 
 struct bitmap *bitmap_expand(struct bitmap *bitmap, int size)
 {  
-  struct bitmap *b = NULL;
-  b = bitmap_create_in_buf((elem_type)size, bitmap, bitmap_buf_size(size));
+  struct bitmap *b = bitmap_create(size);
+  if (b == NULL)
+    return NULL;
+    
+  // 원본 비트맵의 비트 배열 복사
+  size_t min_bytes = byte_cnt(bitmap->bit_cnt);
+  size_t new_bytes = byte_cnt(size);
+  
+  if (min_bytes > new_bytes)
+    min_bytes = new_bytes;
+    
+  // 바이트 단위로 복사
+  memcpy(b->bits, bitmap->bits, min_bytes);
+  
   return b;
 }

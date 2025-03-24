@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <inttypes.h>
+#include <string.h>
 
 // Object Bitmap
 #define BITMAP_MARK "bitmap_mark"
@@ -22,6 +23,7 @@
 #define BITMAP_CONTAINS "bitmap_contains"
 #define BITMAP_ANY "bitmap_any"
 #define BITMAP_ALL "bitmap_all"
+#define BITMAP_DUMP "bitmap_dump"
 #define OBJECT_BITMAP "bitmap"
 
 /* Bitmap abstract data type. */
