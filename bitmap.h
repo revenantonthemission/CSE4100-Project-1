@@ -6,7 +6,7 @@
 #include <inttypes.h>
 #include <string.h>
 
-// Object Bitmap
+// Macros for bitmap
 #define BITMAP_MARK "bitmap_mark"
 #define BITMAP_TEST "bitmap_test"
 #define BITMAP_SIZE "bitmap_size"

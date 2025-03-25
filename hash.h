@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include "list.h"
 
-// Object HashTable
+// Macros for Hashtable
 #define HASHTABLE_INSERT "hash_insert"
 #define HASHTABLE_DELETE "hash_delete"
 #define HASHTABLE_FIND "hash_find"

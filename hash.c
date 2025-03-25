@@ -425,18 +425,15 @@ remove_elem (struct hash *h, struct hash_elem *e)
   list_remove (&e->list_elem);
 }
 
+// 정수를 숫자 문자열로 해석하고 Polynomial Rolling Hashing Function을 사용하여 i의 해시 값을 계산한다.
 unsigned hash_int_2 (int i) {
-  /*
-  - Funcitonality : Implement this in your own way and describe it in the document.
-  - Parameter : Integer that will be hashed.
-  - Return value : Hash value of the integer i.
-  */
+ 
  // polynomial rolling hashing
   unsigned hash = 0;
   unsigned base = 31;
   unsigned mod = 1e9 + 7;
   unsigned power = 1;
-  while (i > 0) {
+  while (i*i > 0) {
     hash = (hash + (i % 10) * power) % mod;
     power = (power * base) % mod;
     i /= 10;
@@ -444,31 +441,46 @@ unsigned hash_int_2 (int i) {
   return hash;
 }
 
+// hash_elem 구조체는 bucket 내의 위치를 나타내는 list_elem과 원소의 값을 나타내는 value로 구성되어 있다. 이 함수에서는 e가 가리키는 원소에서 value를 추출해 hash_int 함수를 통해 하시 값을 생성한 후 해당 값을 반환한다.
 unsigned hash_hash(const struct hash_elem *e, void *aux)
 {
+  /*
+  - Functionality : hash_elem 구조체는 bucket 내의 위치를 나타내는 list_elem과 원소의 값을 나타내는 value로 구성되어 있다.
+                    이 함수에서는 e가 가리키는 원소에서 value를 추출해 hash_int 함수를 통해 하시 값을 생성한 후 해당 값을 반환한다. 
+  - Parameter : e: 해시 테이블에 담긴 원소를 가리키는 포인터, aux: 사용하지 않음.
+  - Return value : e에 담겨있는 값에 대한 해시 값
+  */
   return hash_int(e->value);
 }
 
-
+//해시 테이블에 담겨 있는 두 원소 a와 b를 비교해 a에 담긴 데이터가 더 작다면 true, 아니라면 false를 반환한다.
 bool hash_less(const struct hash_elem *a, const struct hash_elem *b, void *aux)
 {
+  /*
+  - Functionality : 해시 테이블에 담겨 있는 두 원소 a와 b를 비교해 a에 담긴 데이터가 더 작다면 true, 아니라면 false를 반환한다.
+  - Parameter : a, b: 비교할 두 원소, aux: 사용하지 않음.
+  - Return value : a와 b에 담긴 값을 비교한 결과
+  */
   return a->value < b->value;
 }
 
 void hash_destroyer (struct hash_elem *e, void *aux)
 {
-  //destroyer?
-  /* Performs some operation on hash element E, given auxiliary
-   data AUX. */
-  //hash_elem -> hash?
+  /*
+  - Functionality : 해시 테이블에 담긴 원소를 제거한다.
+  - Parameter : e: 해시 테이블에 담긴 원소를 가리키는 포인터, aux: 사용하지 않음.
+  - Return value : 없음.
+  */
   free(e);
 }
 
+// 해시 테이블에 담긴 원소의 값을 제곱한다.
 void hash_square(struct hash_elem *e, void *aux)
 {
   e->value = e->value * e->value;
 }
 
+// 해시 테이블에 담긴 원소의 값을 세제곱한다.
 void hash_triple(struct hash_elem *e, void *aux)
 {
   e->value = e->value * e->value * e->value;

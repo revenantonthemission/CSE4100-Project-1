@@ -36,8 +36,6 @@
 
 static bool is_sorted (struct list_elem *a, struct list_elem *b,
                        list_less_func *less, void *aux);
-void list_swap(struct list_elem *a, struct list_elem *b);
-void list_shuffle(struct list *list);
                        
 /* Returns true if ELEM is a head, false otherwise. */
 static inline bool
@@ -559,6 +557,8 @@ list_min (struct list *list, list_less_func *less, void *aux)
   return min;
 }
 
+/* Swaps two elements A and B. If A and B are adjacent, reconnect A and B.
+   Otherwise, update connections of A and B and exchange their pointers.*/
 void list_swap(struct list_elem *a, struct list_elem *b) {
   // 인접한 경우 특별 처리
   if (a->next == b) { // a 다음에 b가 있는 경우
@@ -601,6 +601,10 @@ void list_swap(struct list_elem *a, struct list_elem *b) {
   b->next = a_next;
 }
 
+/* Shuffles elements in LIST using Fisher-Yates shuffle algorithm. The algorithm
+   takes a list of all the elements of the sequence, and continually determines
+   the next element in the shuffled sequence by randomly drawing an element 
+   from the list until no elements remain. */
 void list_shuffle(struct list *list) {
   if (list_empty(list) || list_size(list) == 1)
     return;
@@ -626,6 +630,8 @@ void list_shuffle(struct list *list) {
     list_swap(e_i, e_j);
   }
 }
+
+// Compare two list elements in parameters.
 bool list_less (const struct list_elem *a, const struct list_elem *b, void *aux)
 {
   /*************

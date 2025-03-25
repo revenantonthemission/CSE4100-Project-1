@@ -83,8 +83,10 @@
 #include <stdint.h>
 #include <string.h>
 
+// Maximum length of object name
 #define MAX_OBJECT_NAME_LENGTH 10
-// Object List
+
+// Macros for list
 #define LIST_FRONT "list_front" 
 #define LIST_BACK "list_back"
 #define LIST_PUSH_FRONT "list_push_front"
@@ -117,9 +119,9 @@ struct list_elem
 struct list_item
   {
     struct list_elem elem;
-    char name[MAX_OBJECT_NAME_LENGTH]; // Object name
-    size_t type; // Object type
-    void *data;
+    char name[MAX_OBJECT_NAME_LENGTH]; /* Object name */
+    size_t type; /* Object type */
+    void *data; /* Pointer to object data */
   };
 
 /* List. */
@@ -138,6 +140,7 @@ struct list
         ((STRUCT *) ((uint8_t *) &(LIST_ELEM)->next     \
                      - offsetof (STRUCT, MEMBER.next)))
 
+/* List creation */
 void list_init (struct list *);
 void list_item_init(struct list_item *, void *, const char*, size_t);
 void list_delete (struct list *);
