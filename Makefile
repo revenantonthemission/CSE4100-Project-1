@@ -25,4 +25,4 @@ hex_dump.o: hex_dump.c hex_dump.h
 	$(CC) $(CFLAGS) -c hex_dump.c	
 # Clean
 clean:
-	rm -f $(OBJS) main
+	rm -f $(OBJS) testlib
