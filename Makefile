@@ -5,7 +5,7 @@ CFLAGS = -Wall -g
 OBJS = main.o hash.o list.o bitmap.o hex_dump.o
 
 # Target
-main: $(OBJS)
+testlib: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
 # Dependencies
